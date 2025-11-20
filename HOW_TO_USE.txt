@@ -1,0 +1,131 @@
+================================================================================
+                    P2P FILE SHARING - QUICK REFERENCE
+================================================================================
+
+STEP-BY-STEP: Share Files Between Two Laptops
+================================================================================
+
+LAPTOP A (Sender) - IP: 192.168.1.100
+--------------------------------------
+1. Find your IP address:
+   > ipconfig
+   Note: 192.168.1.100
+
+2. Put file in data\shared\
+   Example: data\shared\document.pdf
+
+3. Start sharing:
+   > p2p_share.exe --mode=share --file=document.pdf --port=8080
+
+4. Keep this window open while others download
+
+
+LAPTOP B (Receiver) - IP: 192.168.1.101
+----------------------------------------
+1. Edit peers.txt and add Laptop A:
+   192.168.1.100:8080
+
+2. Download the file:
+   > p2p_share.exe --mode=download --file=document.pdf
+
+3. File will be saved to: data\downloads\document.pdf
+
+
+================================================================================
+INTERACTIVE MODE (Recommended for Multiple Files)
+================================================================================
+
+Both Laptops:
+-------------
+1. Start in hybrid mode:
+   > p2p_share.exe --mode=hybrid --port=8080
+
+2. Use the menu:
+   1. Share a file
+   2. Download a file
+   3. List available files
+   4. Show server status
+   5. Exit
+
+
+================================================================================
+IMPORTANT NOTES
+================================================================================
+
+✓ Both laptops MUST be on the same WiFi/LAN network
+✓ Files to share go in: data\shared\
+✓ Downloaded files appear in: data\downloads\
+✓ Edit peers.txt to add other laptop's IP:PORT
+✓ Allow p2p_share.exe through Windows Firewall if prompted
+
+
+================================================================================
+COMMON COMMANDS
+================================================================================
+
+Share a file:
+> p2p_share.exe --mode=share --file=myfile.pdf --port=8080
+
+Download a file:
+> p2p_share.exe --mode=download --file=myfile.pdf
+
+Interactive mode:
+> p2p_share.exe --mode=hybrid --port=8080
+
+Show help:
+> p2p_share.exe --help
+
+Run tests:
+> p2p_share.exe --test
+
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+Can't connect?
+- Check both on same network (same WiFi name)
+- Verify IP address with: ipconfig
+- Test connection: ping 192.168.1.100
+- Check Windows Firewall allows p2p_share.exe
+
+Port already in use?
+- Use different port: --port=8081
+
+File not found?
+- Ensure file is in data\shared\ directory
+- Use exact filename (case-sensitive)
+
+
+================================================================================
+EXAMPLE SESSION
+================================================================================
+
+Laptop A:
+> p2p_share.exe --mode=share --file=presentation.pptx --port=8080
+Sharing file: data/shared/presentation.pptx
+File split into 5 chunks
+Server is running. Press Enter to stop...
+
+Laptop B:
+> p2p_share.exe --mode=download --file=presentation.pptx
+Starting download for file: presentation.pptx
+Found 1 peers with the file
+Downloading 5 chunks...
+Download progress: 5/5 (100%)
+Download complete: data/downloads/presentation.pptx
+
+
+================================================================================
+NEED MORE HELP?
+================================================================================
+
+See detailed guides:
+- USER_GUIDE.md - Complete user manual
+- TROUBLESHOOTING.md - Solve common problems
+- README.md - Project overview
+
+Or run: p2p_share.exe --help
+
+
+================================================================================

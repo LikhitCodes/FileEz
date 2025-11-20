@@ -1,0 +1,2 @@
+This is a test file for P2P file sharing system.
+It will be split into chunks and transferred between peers.

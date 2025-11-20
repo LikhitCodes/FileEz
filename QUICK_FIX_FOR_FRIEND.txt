@@ -1,0 +1,174 @@
+================================================================================
+                    QUICK FIX FOR "DLL NOT FOUND" ERROR
+================================================================================
+
+YOUR FRIEND GOT THIS ERROR:
+---------------------------
+"libstdc++-6.dll not found"
+"libgcc_s_dw2-1.dll not found"
+
+
+SOLUTION - Choose ONE:
+================================================================================
+
+OPTION 1: SEND NEW PACKAGE WITH DLLs (5 minutes)
+-------------------------------------------------
+
+On YOUR computer:
+
+1. Run this:
+   > FIX_MISSING_DLLS.bat
+
+2. Then run this:
+   > CREATE_PORTABLE_PACKAGE.bat
+
+3. Send the NEW P2P_FileShare_Portable.zip to your friend
+
+4. Your friend extracts and runs - IT WILL WORK!
+
+
+OPTION 2: RECOMPILE WITH STATIC LINKING (Best - 10 minutes)
+------------------------------------------------------------
+
+On YOUR computer:
+
+1. Open Makefile in Notepad
+
+2. Find this line:
+   LDFLAGS = -lws2_32
+
+3. Change it to:
+   LDFLAGS = -static -lws2_32 -static-libgcc -static-libstdc++
+
+4. Save and close Makefile
+
+5. Run these commands:
+   > mingw32-make clean
+   > mingw32-make
+
+6. Run this:
+   > CREATE_PORTABLE_PACKAGE.bat
+
+7. Send the NEW P2P_FileShare_Portable.zip to your friend
+
+8. Your friend extracts and runs - IT WILL WORK!
+
+   Note: EXE will be larger (~2-3 MB) but NO DLLs needed!
+
+
+OPTION 3: SEND DLLs SEPARATELY (Emergency - 2 minutes)
+-------------------------------------------------------
+
+On YOUR computer:
+
+1. Go to: C:\MinGW\bin\
+
+2. Copy these 3 files:
+   - libstdc++-6.dll
+   - libgcc_s_dw2-1.dll (or libgcc_s_seh-1.dll)
+   - libwinpthread-1.dll
+
+3. Send these DLLs to your friend
+
+On FRIEND's computer:
+
+1. Put the 3 DLL files in SAME FOLDER as p2p_share.exe
+
+2. Run p2p_share.exe - IT WILL WORK!
+
+
+================================================================================
+                         WHICH OPTION TO CHOOSE?
+================================================================================
+
+OPTION 1 - Quick and Easy
+  ✓ Fast to do
+  ✓ Works immediately
+  ✗ Need to include DLLs in package
+
+OPTION 2 - Best Solution (RECOMMENDED)
+  ✓ Single EXE file
+  ✓ Works on ANY Windows computer
+  ✓ No DLLs needed ever
+  ✗ Slightly larger file size
+
+OPTION 3 - Emergency Only
+  ✓ Fastest (2 minutes)
+  ✗ Friend needs to manually copy DLLs
+  ✗ Not elegant
+
+
+RECOMMENDATION: Use OPTION 2 (Static Linking)
+It takes 10 minutes but solves the problem forever!
+
+
+================================================================================
+                         STEP-BY-STEP: OPTION 2
+================================================================================
+
+1. Open Makefile with Notepad:
+   Right-click Makefile → Open With → Notepad
+
+2. Press Ctrl+F and search for: LDFLAGS = -lws2_32
+
+3. You'll see:
+   ifeq ($(OS),Windows_NT)
+       LDFLAGS = -lws2_32
+       # Uncomment next line for static linking (no DLLs needed):
+       # LDFLAGS = -static -lws2_32 -static-libgcc -static-libstdc++
+
+4. Delete the # from the second LDFLAGS line:
+   ifeq ($(OS),Windows_NT)
+       LDFLAGS = -lws2_32
+       # Uncomment next line for static linking (no DLLs needed):
+       LDFLAGS = -static -lws2_32 -static-libgcc -static-libstdc++
+
+5. Comment out the first LDFLAGS by adding # in front:
+   ifeq ($(OS),Windows_NT)
+       # LDFLAGS = -lws2_32
+       # Uncomment next line for static linking (no DLLs needed):
+       LDFLAGS = -static -lws2_32 -static-libgcc -static-libstdc++
+
+6. Save and close Makefile
+
+7. Open Command Prompt in project folder
+
+8. Run:
+   mingw32-make clean
+   mingw32-make
+
+9. Wait for compilation (takes 1-2 minutes)
+
+10. Run:
+    CREATE_PORTABLE_PACKAGE.bat
+
+11. Send P2P_FileShare_Portable.zip to friend
+
+12. DONE! Will work on any Windows computer!
+
+
+================================================================================
+                         VERIFICATION
+================================================================================
+
+After recompiling with static linking:
+
+Check file size:
+> dir p2p_share.exe
+
+Before: ~200 KB
+After:  ~2-3 MB
+
+If it's bigger, you did it right!
+
+
+================================================================================
+                         NEED HELP?
+================================================================================
+
+See detailed guide: FIX_DLL_ERRORS.md
+
+Or just run: FIX_MISSING_DLLS.bat (for Option 1)
+
+
+================================================================================

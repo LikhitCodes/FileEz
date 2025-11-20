@@ -1,0 +1,4 @@
+# Chunk Metadata File
+# Format: filename,chunkIndex,chunkSize,checksum
+ChunkCount=1
+phase3_test.txt,0,170,00000000230c1a71

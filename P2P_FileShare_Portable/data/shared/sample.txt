@@ -1,0 +1,3 @@
+This is a sample file for testing P2P file sharing. 
+You can share this file to test the system. 
+Replace this with your own files to share. 

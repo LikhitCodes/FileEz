@@ -1,0 +1,4 @@
+This is a test file for Phase 5 client implementation.
+It will be split into chunks and served by a server.
+The client will download it using parallel requests.
+This demonstrates the complete P2P file sharing workflow.

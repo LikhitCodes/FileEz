@@ -1,0 +1,146 @@
+================================================================================
+                    HOW TO SEND TO ANOTHER LAPTOP
+================================================================================
+
+STEP 1: CREATE PORTABLE PACKAGE
+--------------------------------
+On your current laptop:
+
+> CREATE_PORTABLE_PACKAGE.bat
+
+This creates: P2P_FileShare_Portable.zip (about 200 KB)
+
+
+STEP 2: TRANSFER TO OTHER LAPTOP
+---------------------------------
+Choose ONE method:
+
+METHOD A - USB Drive:
+  1. Copy P2P_FileShare_Portable.zip to USB drive
+  2. Plug USB into other laptop
+  3. Copy ZIP from USB to Desktop
+
+METHOD B - Email:
+  1. Attach P2P_FileShare_Portable.zip to email
+  2. Send to yourself or other person
+  3. Download on other laptop
+
+METHOD C - Cloud (Google Drive, Dropbox):
+  1. Upload P2P_FileShare_Portable.zip
+  2. Share link
+  3. Download on other laptop
+
+METHOD D - Network Share:
+  1. Copy to shared network folder
+  2. Access from other laptop
+  3. Copy to Desktop
+
+
+STEP 3: SETUP ON OTHER LAPTOP
+------------------------------
+On the other laptop:
+
+1. Extract P2P_FileShare_Portable.zip
+   (Right-click → Extract All)
+
+2. Open the extracted folder
+
+3. Double-click: START_P2P.bat
+
+4. Done! The program is running!
+
+
+STEP 4: CONFIGURE BOTH LAPTOPS
+-------------------------------
+
+LAPTOP A (192.168.1.100):
+  - Edit peers.txt
+  - Add: 192.168.1.101:8080
+
+LAPTOP B (192.168.1.101):
+  - Edit peers.txt
+  - Add: 192.168.1.100:8080
+
+Now they can share files!
+
+
+================================================================================
+                         QUICK EXAMPLE
+================================================================================
+
+LAPTOP A (Sender):
+------------------
+1. Put file in: data\shared\document.pdf
+2. Run: SHARE_FILE.bat
+3. Enter filename: document.pdf
+4. Enter port: 8080
+5. Keep window open
+
+LAPTOP B (Receiver):
+--------------------
+1. Edit peers.txt: 192.168.1.100:8080
+2. Run: DOWNLOAD_FILE.bat
+3. Enter filename: document.pdf
+4. File downloads to: data\downloads\document.pdf
+
+
+================================================================================
+                         IMPORTANT NOTES
+================================================================================
+
+✓ Both laptops MUST be on same WiFi network
+✓ No installation needed - just extract and run
+✓ No admin rights required
+✓ Works from any location (Desktop, USB, etc.)
+✓ Can delete anytime - no system changes
+✓ ZIP file is very small (~200 KB)
+
+
+================================================================================
+                         WHAT'S IN THE ZIP
+================================================================================
+
+P2P_FileShare_Portable/
+├── p2p_share.exe          ← Main program
+├── START_P2P.bat          ← Double-click this to start
+├── SHARE_FILE.bat         ← Quick share launcher
+├── DOWNLOAD_FILE.bat      ← Quick download launcher
+├── peers.txt              ← Edit to add other laptop's IP
+├── README.txt             ← Quick instructions
+└── data/
+    ├── shared/            ← Put files here to share
+    ├── chunks/            ← Temporary (auto-created)
+    └── downloads/         ← Downloaded files appear here
+
+
+================================================================================
+                         TROUBLESHOOTING
+================================================================================
+
+Can't connect?
+→ Check both on same WiFi network
+→ Check IP address with: ipconfig
+→ Allow through Windows Firewall
+
+"Windows protected your PC"?
+→ Click "More info" → "Run anyway"
+→ This is normal for unsigned programs
+
+Port already in use?
+→ Use different port (8081, 8082, etc.)
+
+
+================================================================================
+                         SUMMARY
+================================================================================
+
+1. Run: CREATE_PORTABLE_PACKAGE.bat
+2. Copy: P2P_FileShare_Portable.zip to other laptop
+3. Extract and run: START_P2P.bat
+4. Edit: peers.txt on both laptops
+5. Share files!
+
+That's it! No installation, no complexity! 🚀
+
+
+================================================================================
