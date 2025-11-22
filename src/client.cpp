@@ -216,16 +216,22 @@ std::vector<Peer> P2PClient::findPeersWithFile(const std::string& filename) {
     std::vector<Peer> allPeers = peerManager.getActivePeers();
     
     std::cout << "Searching for file among " << allPeers.size() << " peers..." << std::endl;
+    std::cout << "Looking for filename: '" << filename << "'" << std::endl;
     
     for (auto& peer : allPeers) {
         // Request chunk list from peer
         std::vector<ChunkInfo> chunks = requestChunkListFromPeer(peer.ip, peer.port);
         
+        std::cout << "Peer " << peer.ip << ":" << peer.port << " has " << chunks.size() << " chunks:" << std::endl;
+        
         // Check if peer has any chunks of this file
         for (const auto& chunk : chunks) {
+            std::cout << "  Chunk " << chunk.chunkIndex << ": filename='" << chunk.filename 
+                      << "' (length=" << chunk.filename.length() << ")" << std::endl;
+            
             if (chunk.filename == filename) {
                 peersWithFile.push_back(peer);
-                std::cout << "Peer " << peer.ip << ":" << peer.port << " has the file" << std::endl;
+                std::cout << "✓ Peer " << peer.ip << ":" << peer.port << " has the file" << std::endl;
                 break;
             }
         }
@@ -343,7 +349,6 @@ bool P2PClient::downloadChunksParallel(const std::vector<ChunkDownloadTask>& tas
     std::cout << "Starting parallel download of " << tasks.size() << " chunks..." << std::endl;
     
     // For simplicity, download sequentially for now
-    // In a full implementation, we would use threads here
     int successCount = 0;
     
     for (size_t i = 0; i < tasks.size(); i++) {

@@ -6,6 +6,7 @@
 #include <memory>
 #include <cstring>
 #include <map>
+#include <set>
 #ifdef _WIN32
     #include <windows.h>
     #include <conio.h>
@@ -23,7 +24,8 @@
 enum AppMode {
     MODE_SHARE,
     MODE_DOWNLOAD,
-    MODE_HYBRID
+    MODE_HYBRID,
+    MODE_DISCOVER
 };
 
 // Global configuration
@@ -50,9 +52,11 @@ struct AppConfig {
 // Function declarations
 void printUsage();
 bool parseArguments(int argc, char* argv[], AppConfig& config);
+void runInteractiveMode(AppConfig& config);
 void runShareMode(const AppConfig& config);
 void runDownloadMode(const AppConfig& config);
 void runHybridMode(const AppConfig& config);
+void runDiscoverMode(const AppConfig& config);
 void startServer(int port);
 void startClient(const AppConfig& config);
 void testNetworkFunctionality();
@@ -67,6 +71,13 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     
+    // If no arguments provided, run interactive mode
+    if (argc == 1) {
+        runInteractiveMode(config);
+        NetworkUtils::cleanupNetwork();
+        return 0;
+    }
+    
     // Parse command line arguments
     if (!parseArguments(argc, argv, config)) {
         printUsage();
@@ -78,7 +89,8 @@ int main(int argc, char* argv[]) {
     std::cout << "  P2P File Sharing System" << std::endl;
     std::cout << "========================================" << std::endl;
     std::cout << "Mode: " << (config.mode == MODE_SHARE ? "Share" : 
-                             config.mode == MODE_DOWNLOAD ? "Download" : "Hybrid") << std::endl;
+                             config.mode == MODE_DOWNLOAD ? "Download" : 
+                             config.mode == MODE_DISCOVER ? "Discover" : "Hybrid") << std::endl;
     std::cout << "Port: " << config.port << std::endl;
     std::cout << "========================================\n" << std::endl;
     
@@ -101,6 +113,9 @@ int main(int argc, char* argv[]) {
             case MODE_HYBRID:
                 runHybridMode(config);
                 break;
+            case MODE_DISCOVER:
+                runDiscoverMode(config);
+                break;
         }
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
@@ -116,14 +131,21 @@ void printUsage() {
     std::cout << "\n=== P2P File Sharing System ===\n\n"
               << "Usage: p2p_share [OPTIONS]\n\n"
               << "Options:\n"
-              << "  --mode=<share|download|hybrid>  Operation mode (default: hybrid)\n"
-              << "  --file=<filename>               File to share or download\n"
-              << "  --port=<port>                   Port number (default: 8080)\n"
-              << "  --peers=<filename>              Peers file (default: peers.txt)\n"
-              << "  --verbose, -v                   Enable verbose output\n"
-              << "  --test                          Run system tests\n"
-              << "  --help, -h                      Show this help message\n\n"
+              << "  --mode=<share|download|hybrid|discover>  Operation mode (default: hybrid)\n"
+              << "  --file=<filename>                        File to share or download\n"
+              << "  --port=<port>                            Port number (default: 8080)\n"
+              << "  --peers=<filename>                       Peers file (default: peers.txt)\n"
+              << "  --verbose, -v                            Enable verbose output\n"
+              << "  --test                                   Run system tests\n"
+              << "  --help, -h                               Show this help message\n\n"
+              << "Modes:\n"
+              << "  share    - Share a file with other peers\n"
+              << "  download - Download a file from peers\n"
+              << "  hybrid   - Both share and download\n"
+              << "  discover - Scan network for peers and add to peers.txt\n\n"
               << "Examples:\n"
+              << "  Discover peers on network:\n"
+              << "    p2p_share --mode=discover --port=8080\n\n"
               << "  Share a file:\n"
               << "    p2p_share --mode=share --file=document.pdf --port=8080\n\n"
               << "  Download a file:\n"
@@ -147,6 +169,8 @@ bool parseArguments(int argc, char* argv[], AppConfig& config) {
                 config.mode = MODE_DOWNLOAD;
             } else if (mode == "hybrid") {
                 config.mode = MODE_HYBRID;
+            } else if (mode == "discover") {
+                config.mode = MODE_DISCOVER;
             } else {
                 std::cerr << "Invalid mode: " << mode << std::endl;
                 return false;
@@ -456,6 +480,309 @@ void testFileManagement() {
     }
     
     std::cout << "=== File Management Tests Complete ===" << std::endl;
+}
+
+void runInteractiveMode(AppConfig& config) {
+    std::cout << "\n========================================" << std::endl;
+    std::cout << "  P2P File Sharing System" << std::endl;
+    std::cout << "  Interactive Mode" << std::endl;
+    std::cout << "========================================\n" << std::endl;
+    
+    // Show local IP addresses
+    std::vector<std::string> localIPs = NetworkUtils::getAllLocalIPs();
+    if (!localIPs.empty()) {
+        std::cout << "Your IP address(es):" << std::endl;
+        for (const auto& ip : localIPs) {
+            std::cout << "  - " << ip << std::endl;
+        }
+        std::cout << std::endl;
+    }
+    
+    // Main menu
+    while (true) {
+        std::cout << "What would you like to do?" << std::endl;
+        std::cout << "1. Share a file" << std::endl;
+        std::cout << "2. Download a file" << std::endl;
+        std::cout << "3. Browse available files on peers" << std::endl;
+        std::cout << "4. Discover peers on network" << std::endl;
+        std::cout << "5. View peers list" << std::endl;
+        std::cout << "6. Exit" << std::endl;
+        std::cout << "\nEnter choice (1-6): ";
+        
+        std::string choice;
+        std::getline(std::cin, choice);
+        std::cout << std::endl;
+        
+        if (choice == "1") {
+            // Share mode
+            std::cout << "=== Share a File ===" << std::endl;
+            
+            // List available files in shared directory
+            if (FileUtils::directoryExists(config.sharedDir)) {
+                std::vector<std::string> files = FileUtils::listFiles(config.sharedDir);
+                if (!files.empty()) {
+                    std::cout << "\nAvailable files in " << config.sharedDir << ":" << std::endl;
+                    for (size_t i = 0; i < files.size(); i++) {
+                        std::string filename = files[i];
+                        size_t lastSlash = filename.find_last_of("/\\");
+                        if (lastSlash != std::string::npos) {
+                            filename = filename.substr(lastSlash + 1);
+                        }
+                        std::cout << "  " << (i + 1) << ". " << filename << std::endl;
+                    }
+                    std::cout << std::endl;
+                }
+            }
+            
+            std::cout << "Enter filename to share (just the name, e.g., 'document.pdf'): ";
+            std::getline(std::cin, config.filename);
+            
+            std::cout << "Enter port (default 8080, press Enter for default): ";
+            std::string portStr;
+            std::getline(std::cin, portStr);
+            if (!portStr.empty()) {
+                config.port = std::stoi(portStr);
+            }
+            
+            std::cout << "\nStarting server..." << std::endl;
+            std::cout << "Share this information with others:" << std::endl;
+            if (!localIPs.empty()) {
+                std::cout << "  IP: " << localIPs[0] << std::endl;
+            }
+            std::cout << "  Port: " << config.port << std::endl;
+            std::cout << "  File: " << config.filename << std::endl;
+            std::cout << "\nPress Enter to stop sharing..." << std::endl;
+            
+            config.mode = MODE_SHARE;
+            runShareMode(config);
+            break;
+            
+        } else if (choice == "2") {
+            // Download mode
+            std::cout << "=== Download a File ===" << std::endl;
+            
+            std::cout << "Enter filename to download: ";
+            std::getline(std::cin, config.filename);
+            
+            std::cout << "\nStarting download..." << std::endl;
+            config.mode = MODE_DOWNLOAD;
+            runDownloadMode(config);
+            
+            std::cout << "\nPress Enter to continue...";
+            std::cin.get();
+            
+        } else if (choice == "3") {
+            // Browse available files
+            std::cout << "=== Browse Available Files ===" << std::endl;
+            
+            // Load peers
+            PeerManager peerManager;
+            if (!peerManager.loadPeersFromFile(config.peersFile)) {
+                std::cout << "No peers configured. Add peers first (option 4 or 5)." << std::endl;
+                std::cout << "\nPress Enter to continue...";
+                std::cin.get();
+                continue;
+            }
+            
+            std::vector<Peer> peers = peerManager.getActivePeers();
+            if (peers.empty()) {
+                std::cout << "No peers found in " << config.peersFile << std::endl;
+                std::cout << "\nPress Enter to continue...";
+                std::cin.get();
+                continue;
+            }
+            
+            std::cout << "\nConnecting to peers and fetching file lists...\n" << std::endl;
+            
+            // Create a temporary client to query peers
+            P2PClient tempClient(config.downloadDir, config.chunksDir + "_temp");
+            
+            // Track all unique files
+            std::map<std::string, std::vector<std::string>> fileMap; // filename -> list of peer IPs
+            
+            for (auto& peer : peers) {
+                std::cout << "Checking peer " << peer.ip << ":" << peer.port << "..." << std::endl;
+                
+                // Request chunk list from peer
+                std::vector<ChunkInfo> chunks = tempClient.requestChunkListFromPeer(peer.ip, peer.port);
+                
+                if (chunks.empty()) {
+                    std::cout << "  No response or no files available" << std::endl;
+                    continue;
+                }
+                
+                // Extract unique filenames
+                std::set<std::string> uniqueFiles;
+                for (const auto& chunk : chunks) {
+                    uniqueFiles.insert(chunk.filename);
+                }
+                
+                std::cout << "  Found " << uniqueFiles.size() << " file(s):" << std::endl;
+                for (const auto& filename : uniqueFiles) {
+                    std::cout << "    - " << filename << std::endl;
+                    fileMap[filename].push_back(peer.ip + ":" + std::to_string(peer.port));
+                }
+            }
+            
+            if (fileMap.empty()) {
+                std::cout << "\nNo files available on any peer." << std::endl;
+            } else {
+                std::cout << "\n=== Summary of Available Files ===" << std::endl;
+                int fileNum = 1;
+                for (const auto& entry : fileMap) {
+                    std::cout << fileNum++ << ". " << entry.first << std::endl;
+                    std::cout << "   Available on " << entry.second.size() << " peer(s): ";
+                    for (size_t i = 0; i < entry.second.size(); i++) {
+                        std::cout << entry.second[i];
+                        if (i < entry.second.size() - 1) std::cout << ", ";
+                    }
+                    std::cout << std::endl;
+                }
+                
+                std::cout << "\nWould you like to download a file? (y/n): ";
+                std::string downloadChoice;
+                std::getline(std::cin, downloadChoice);
+                
+                if (downloadChoice == "y" || downloadChoice == "Y") {
+                    std::cout << "Enter filename to download: ";
+                    std::getline(std::cin, config.filename);
+                    
+                    std::cout << "\nStarting download..." << std::endl;
+                    config.mode = MODE_DOWNLOAD;
+                    runDownloadMode(config);
+                }
+            }
+            
+            std::cout << "\nPress Enter to continue...";
+            std::cin.get();
+            
+        } else if (choice == "4") {
+            // Discover mode
+            std::cout << "Enter port to scan (default 8080): ";
+            std::string portStr;
+            std::getline(std::cin, portStr);
+            if (!portStr.empty()) {
+                config.port = std::stoi(portStr);
+            }
+            
+            config.mode = MODE_DISCOVER;
+            runDiscoverMode(config);
+            
+            std::cout << "\nPress Enter to continue...";
+            std::cin.get();
+            
+        } else if (choice == "5") {
+            // View peers
+            std::cout << "=== Peers List ===" << std::endl;
+            std::ifstream peersFile(config.peersFile.c_str());
+            if (peersFile.is_open()) {
+                std::string line;
+                int count = 0;
+                while (std::getline(peersFile, line)) {
+                    if (!line.empty() && line[0] != '#') {
+                        count++;
+                        std::cout << "  " << count << ". " << line << std::endl;
+                    }
+                }
+                peersFile.close();
+                
+                if (count == 0) {
+                    std::cout << "  No peers configured." << std::endl;
+                    std::cout << "  Use option 3 to discover peers on your network." << std::endl;
+                }
+            } else {
+                std::cout << "  Peers file not found: " << config.peersFile << std::endl;
+            }
+            std::cout << "\nPress Enter to continue...";
+            std::cin.get();
+            
+        } else if (choice == "6") {
+            std::cout << "Goodbye!" << std::endl;
+            break;
+            
+        } else {
+            std::cout << "Invalid choice. Please try again.\n" << std::endl;
+        }
+    }
+}
+
+void runDiscoverMode(const AppConfig& config) {
+    std::cout << "\n=== Peer Discovery Mode ===" << std::endl;
+    std::cout << "Scanning local network for P2P servers..." << std::endl;
+    std::cout << "Port: " << config.port << std::endl;
+    std::cout << "Peers file: " << config.peersFile << std::endl;
+    std::cout << "\nThis may take a few minutes depending on network size.\n" << std::endl;
+    
+    // Discover peers on the network
+    std::vector<std::string> discoveredPeers = NetworkUtils::discoverPeersOnNetwork(config.port, 500);
+    
+    if (discoveredPeers.empty()) {
+        std::cout << "\nNo peers found on the network." << std::endl;
+        std::cout << "Make sure other peers are running in share mode on port " << config.port << std::endl;
+        return;
+    }
+    
+    // Show discovered peers
+    std::cout << "\n=== Discovered Peers ===" << std::endl;
+    for (size_t i = 0; i < discoveredPeers.size(); i++) {
+        std::cout << (i + 1) << ". " << discoveredPeers[i] << ":" << config.port << std::endl;
+    }
+    
+    // Ask user if they want to add peers to peers.txt
+    std::cout << "\nDo you want to add these peers to " << config.peersFile << "? (y/n): ";
+    std::string response;
+    std::getline(std::cin, response);
+    
+    if (response == "y" || response == "Y" || response == "yes" || response == "Yes") {
+        // Load existing peers
+        std::vector<std::string> existingPeers;
+        std::ifstream inFile(config.peersFile.c_str());
+        if (inFile.is_open()) {
+            std::string line;
+            while (std::getline(inFile, line)) {
+                // Skip comments and empty lines
+                if (!line.empty() && line[0] != '#') {
+                    existingPeers.push_back(line);
+                }
+            }
+            inFile.close();
+        }
+        
+        // Add new peers (avoid duplicates)
+        int addedCount = 0;
+        std::ofstream outFile(config.peersFile.c_str(), std::ios::app);
+        if (outFile.is_open()) {
+            for (const auto& ip : discoveredPeers) {
+                std::string peerEntry = ip + ":" + std::to_string(config.port);
+                
+                // Check if peer already exists
+                bool exists = false;
+                for (const auto& existing : existingPeers) {
+                    if (existing.find(ip) != std::string::npos) {
+                        exists = true;
+                        break;
+                    }
+                }
+                
+                if (!exists) {
+                    outFile << peerEntry << std::endl;
+                    addedCount++;
+                    std::cout << "Added: " << peerEntry << std::endl;
+                } else {
+                    std::cout << "Skipped (already exists): " << peerEntry << std::endl;
+                }
+            }
+            outFile.close();
+            
+            std::cout << "\n✓ Added " << addedCount << " new peers to " << config.peersFile << std::endl;
+        } else {
+            std::cerr << "Failed to open " << config.peersFile << " for writing" << std::endl;
+        }
+    } else {
+        std::cout << "Peers not added to file." << std::endl;
+    }
+    
+    std::cout << "\n=== Discovery Complete ===" << std::endl;
 }
 
 void testNetworkFunctionality() {

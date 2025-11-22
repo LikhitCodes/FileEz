@@ -1,0 +1,4 @@
+# Chunk Metadata File
+# Format: filename,chunkIndex,chunkSize,checksum
+ChunkCount=1
+test.txt,0,145,0000000028eae02e

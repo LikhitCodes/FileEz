@@ -96,8 +96,14 @@ public:
     
     // Network information
     static std::string getLocalIP();
+    static std::vector<std::string> getAllLocalIPs();
+    static std::string getSubnetMask();
     static bool isValidIP(const std::string& ip);
     static bool isPortAvailable(int port);
+    
+    // Peer discovery
+    static std::vector<std::string> discoverPeersOnNetwork(int port, int timeoutMs = 1000);
+    static bool isPeerResponding(const std::string& ip, int port, int timeoutMs = 1000);
     
     // Error handling
     static std::string getLastSocketError();

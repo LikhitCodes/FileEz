@@ -63,8 +63,10 @@ echo Replace this with your own files to share. >> %PACKAGE_DIR%\data\shared\sam
 
 echo [5/6] Copying documentation...
 copy USER_GUIDE.md %PACKAGE_DIR%\ >nul 2>&1
+copy QUICK_START.md %PACKAGE_DIR%\ >nul 2>&1
 copy HOW_TO_USE.txt %PACKAGE_DIR%\ >nul 2>&1
 copy TROUBLESHOOTING.md %PACKAGE_DIR%\ >nul 2>&1
+copy HOW_THIS_WORKS.md %PACKAGE_DIR%\ >nul 2>&1
 
 echo [6/6] Creating launcher scripts...
 
@@ -100,19 +102,22 @@ echo echo. >> %PACKAGE_DIR%\DOWNLOAD_FILE.bat
 echo echo File saved to: data\downloads\%%filename%% >> %PACKAGE_DIR%\DOWNLOAD_FILE.bat
 echo pause >> %PACKAGE_DIR%\DOWNLOAD_FILE.bat
 
-REM Create Interactive Mode Launcher
+REM Create Interactive Mode Launcher (NEW - No arguments = interactive)
 echo @echo off > %PACKAGE_DIR%\START_P2P.bat
-echo echo ============================================ >> %PACKAGE_DIR%\START_P2P.bat
-echo echo   P2P File Share - INTERACTIVE MODE >> %PACKAGE_DIR%\START_P2P.bat
-echo echo ============================================ >> %PACKAGE_DIR%\START_P2P.bat
+echo title P2P File Sharing System >> %PACKAGE_DIR%\START_P2P.bat
+echo color 0A >> %PACKAGE_DIR%\START_P2P.bat
 echo echo. >> %PACKAGE_DIR%\START_P2P.bat
-echo echo Your IP Address: >> %PACKAGE_DIR%\START_P2P.bat
-echo for /f "tokens=2 delims=:" %%%%a in ('ipconfig ^| findstr /c:"IPv4 Address"') do echo %%%%a >> %PACKAGE_DIR%\START_P2P.bat
+echo echo ================================================ >> %PACKAGE_DIR%\START_P2P.bat
+echo echo   P2P File Sharing System - Easy Launcher >> %PACKAGE_DIR%\START_P2P.bat
+echo echo ================================================ >> %PACKAGE_DIR%\START_P2P.bat
 echo echo. >> %PACKAGE_DIR%\START_P2P.bat
-echo set /p port="Enter port (default 8080): " >> %PACKAGE_DIR%\START_P2P.bat
-echo if "%%port%%"=="" set port=8080 >> %PACKAGE_DIR%\START_P2P.bat
-echo echo. >> %PACKAGE_DIR%\START_P2P.bat
-echo p2p_share.exe --mode=hybrid --port=%%port%% >> %PACKAGE_DIR%\START_P2P.bat
+echo REM Check if data directories exist, create if not >> %PACKAGE_DIR%\START_P2P.bat
+echo if not exist "data\shared" mkdir data\shared >> %PACKAGE_DIR%\START_P2P.bat
+echo if not exist "data\downloads" mkdir data\downloads >> %PACKAGE_DIR%\START_P2P.bat
+echo if not exist "data\chunks" mkdir data\chunks >> %PACKAGE_DIR%\START_P2P.bat
+echo REM Run the program in interactive mode >> %PACKAGE_DIR%\START_P2P.bat
+echo p2p_share.exe >> %PACKAGE_DIR%\START_P2P.bat
+echo pause >> %PACKAGE_DIR%\START_P2P.bat
 
 REM Create README
 echo ================================================ > %PACKAGE_DIR%\README.txt
