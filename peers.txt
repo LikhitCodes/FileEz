@@ -1,4 +1,0 @@
-# P2P File Sharing System - Peer List
-# Format: IP:PORT
-# Example peers on local network
-127.0.0.1:8888

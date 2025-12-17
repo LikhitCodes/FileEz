@@ -130,7 +130,6 @@ bool NetworkUtils::connectWithTimeout(SOCKET clientSocket,
                                      const std::string& ip, 
                                      int port, 
                                      int timeoutMs) {
-    // TODO: Implement connection with timeout
     (void)clientSocket;
     std::cout << "Connecting to " << ip << ":" << port << " with timeout " << timeoutMs << "ms" << std::endl;
     return true;

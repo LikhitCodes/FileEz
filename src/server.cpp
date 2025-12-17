@@ -67,13 +67,13 @@ bool P2PServer::start() {
         NetworkUtils::closeSocket(serverSocket);
         return false;
     }
-#else
-    if (pthread_create(&serverThread, NULL, serverThreadFunc, this) != 0) {
-        std::cerr << "Failed to create server thread" << std::endl;
-        running = false;
-        NetworkUtils::closeSocket(serverSocket);
-        return false;
-    }
+// #else
+//     if (pthread_create(&serverThread, NULL, serverThreadFunc, this) != 0) {
+//         std::cerr << "Failed to create server thread" << std::endl;
+//         running = false;
+//         NetworkUtils::closeSocket(serverSocket);
+//         return false;
+//     }
 #endif
     
     std::cout << "P2P server started successfully on port " << port << std::endl;
@@ -108,16 +108,16 @@ void P2PServer::stop() {
         WaitForSingleObject(thread, 2000);
         CloseHandle(thread);
     }
-#else
-    if (serverThread != 0) {
-        pthread_join(serverThread, NULL);
-        serverThread = 0;
-    }
+// #else
+//     if (serverThread != 0) {
+//         pthread_join(serverThread, NULL);
+//         serverThread = 0;
+//     }
     
-    // Wait for client threads
-    for (pthread_t thread : clientThreads) {
-        pthread_join(thread, NULL);
-    }
+//     // Wait for client threads
+//     for (pthread_t thread : clientThreads) {
+//         pthread_join(thread, NULL);
+//     }
 #endif
     
     clientThreads.clear();
@@ -150,16 +150,16 @@ void P2PServer::run() {
             NetworkUtils::closeSocket(clientSocket);
             delete data;
         }
-#else
-        pthread_t clientThread;
-        if (pthread_create(&clientThread, NULL, clientThreadFunc, data) == 0) {
-            pthread_detach(clientThread); // Detach so it cleans up automatically
-            clientThreads.push_back(clientThread);
-        } else {
-            std::cerr << "Failed to create client handler thread" << std::endl;
-            NetworkUtils::closeSocket(clientSocket);
-            delete data;
-        }
+// #else
+//         pthread_t clientThread;
+//         if (pthread_create(&clientThread, NULL, clientThreadFunc, data) == 0) {
+//             pthread_detach(clientThread); // Detach so it cleans up automatically
+//             clientThreads.push_back(clientThread);
+//         } else {
+//             std::cerr << "Failed to create client handler thread" << std::endl;
+//             NetworkUtils::closeSocket(clientSocket);
+//             delete data;
+//         }
 #endif
     }
 }
