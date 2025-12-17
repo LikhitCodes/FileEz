@@ -1,0 +1,5 @@
+# P2P File Sharing - Peer Configuration 
+# Add your friend's IP address and port here 
+# Format: IP:PORT 
+# Example: 192.168.1.100:8081 
+ 

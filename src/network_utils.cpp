@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <cstdint>
 #include <algorithm>
 #ifdef _WIN32
     #include <ws2tcpip.h>

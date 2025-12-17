@@ -6,10 +6,10 @@
 #include <map>
 
 // Configuration constants
-const int DEFAULT_CHUNK_SIZE = 1024 * 1024; // 1MB chunks
-const int MAX_BUFFER_SIZE = 8192;           // 8KB buffer
-const int DEFAULT_PORT = 8080;
-const int MAX_PEERS = 100;
+constexpr int DEFAULT_CHUNK_SIZE = 1024 * 1024; // 1MB chunks
+constexpr int MAX_BUFFER_SIZE = 8192;           // 8KB buffer
+constexpr int DEFAULT_PORT = 8080;
+constexpr int MAX_PEERS = 100;
 
 // Chunk metadata structure
 struct ChunkInfo {
