@@ -1,4 +1,0 @@
-Welcome to P2P File Sharing! 
- 
-This is a sample file to test the system. 
-You can replace this with your own files. 

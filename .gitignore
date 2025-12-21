@@ -7,3 +7,14 @@ DEPLOY_FOR_FRIENDS_V2.bat
 FRIEND_SETUP_GUIDE.md
 FRONTEND_ARCHITECTURE.md
 FileEz/
+
+# Build outputs
+dist/
+win-unpacked/
+portable/
+
+# Executables
+*.exe
+
+# Archives
+*.zip
