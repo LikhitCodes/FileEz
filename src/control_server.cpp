@@ -16,6 +16,7 @@
 #include "../include/network_utils.h"
 #include "../include/file_utils.h"
 #include "../include/peer.h"
+#include "../include/history_manager.h"
 
 // Control server header
 #include "../include/control_server.h"
@@ -57,7 +58,7 @@ void startControlServer() {
     // Enable CORS for frontend access
     http.set_default_headers({
         {"Access-Control-Allow-Origin", "*"},
-        {"Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT"},
+        {"Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE"},
         {"Access-Control-Allow-Headers", "Content-Type, X-Filename, X-Requested-With"}
     });
 
@@ -387,6 +388,9 @@ void startControlServer() {
         std::vector<ChunkInfo> chunkList;
         if (FileUtils::splitFileToChunks(filepath, g_config.chunksDir, chunkList)) {
             std::cout << "[UPLOAD] Successfully created " << chunkList.size() << " chunks" << std::endl;
+            
+            // Log file sharing to history
+            HistoryManager::logFileShared(filename, "localhost", chunkList.size());
         } else {
             std::cout << "[UPLOAD] Failed to create chunks" << std::endl;
         }
@@ -523,6 +527,55 @@ void startControlServer() {
 
         std::string message = "Processed " + std::to_string(chunkedCount) + " files, created " + std::to_string(totalChunks) + " chunks";
         res.set_content("{\"success\": true, \"message\": \"" + message + "\"}", "application/json");
+    });
+
+    http.Get("/history", [](const httplib::Request& req, httplib::Response& res) {
+        std::lock_guard<std::mutex> lock(g_mutex);
+
+        // Check if raw format is requested
+        auto format = req.get_param_value("format");
+        if (format == "raw") {
+            // Serve the raw history.txt file
+            std::ifstream file("data/history.txt");
+            if (file.is_open()) {
+                std::string content((std::istreambuf_iterator<char>(file)),
+                                   std::istreambuf_iterator<char>());
+                res.set_header("Content-Disposition", "attachment; filename=history.txt");
+                res.set_content(content, "text/plain");
+            } else {
+                res.status = 404;
+                res.set_content("History file not found", "text/plain");
+            }
+            return;
+        }
+
+        std::vector<std::string> history = HistoryManager::getHistory(50); // Get last 50 entries
+        
+        std::string json = "[\n";
+        bool first = true;
+        for (const auto& entry : history) {
+            if (!first) json += ",\n";
+            json += "  \"" + entry + "\"";
+            first = false;
+        }
+        json += "\n]";
+
+        res.set_content(json, "application/json");
+    });
+
+    http.Delete("/history", [](const httplib::Request&, httplib::Response& res) {
+        std::lock_guard<std::mutex> lock(g_mutex);
+
+        if (HistoryManager::clearHistory()) {
+            res.set_content("{\"success\": true, \"message\": \"History cleared\"}", "application/json");
+        } else {
+            res.status = 500;
+            res.set_content("{\"error\": \"Failed to clear history\"}", "application/json");
+        }
+    });
+
+    http.Options("/history", [](const httplib::Request&, httplib::Response& res) {
+        res.status = 200;
     });
 
     // Serve the web interface

@@ -56,6 +56,9 @@ export default function P2PServerDashboard() {
   const [sharedFiles, setSharedFiles] = useState<LocalFile[]>([])
   const [downloadedFiles, setDownloadedFiles] = useState<LocalFile[]>([])
   const [showDownloadDialog, setShowDownloadDialog] = useState(false)
+  const [history, setHistory] = useState<string[]>([])
+  const [showFullHistory, setShowFullHistory] = useState(false)
+  const [historyLoading, setHistoryLoading] = useState(false)
 
   const fetchStatus = async () => {
     setLoading(true)
@@ -247,6 +250,59 @@ export default function P2PServerDashboard() {
     setShowDownloadDialog(true)
   }
 
+  const fetchHistory = async () => {
+    setHistoryLoading(true)
+    try {
+      console.log("Fetching history from:", `${API_BASE}/history`)
+      const response = await fetch(`${API_BASE}/history`)
+      console.log("History response status:", response.status)
+      
+      if (!response.ok) {
+        console.error("History response not ok:", response.status, response.statusText)
+        throw new Error(`Failed to fetch history: ${response.status} ${response.statusText}`)
+      }
+
+      const data = await response.json()
+      console.log("History data received:", data)
+      setHistory(data)
+    } catch (error) {
+      console.error("Failed to fetch history:", error)
+      // Set empty array on error to prevent UI issues
+      setHistory([])
+      setMessage({ type: "error", text: "Failed to load transfer history" })
+    } finally {
+      setHistoryLoading(false)
+    }
+  }
+
+  const clearHistory = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/history`, { method: "DELETE" })
+      if (!response.ok) throw new Error("Failed to clear history")
+
+      setHistory([])
+      setMessage({ type: "success", text: "History cleared successfully" })
+    } catch (error) {
+      setMessage({
+        type: "error",
+        text: `Failed to clear history: ${error instanceof Error ? error.message : "Unknown error"}`,
+      })
+    }
+  }
+
+  const openHistoryFile = () => {
+    // For desktop app, we can try to open the file
+    if (window.location.protocol === 'file:' || window.location.hostname === '127.0.0.1') {
+      // Create a link to download/view the history file
+      const link = document.createElement('a')
+      link.href = `${API_BASE}/history?format=raw`
+      link.target = '_blank'
+      link.click()
+    } else {
+      setShowFullHistory(true)
+    }
+  }
+
   const fetchPeers = async () => {
     try {
       const response = await fetch(`${API_BASE}/peers`)
@@ -342,6 +398,7 @@ export default function P2PServerDashboard() {
     fetchPeers()
     fetchSharedFiles()
     fetchDownloadedFiles()
+    fetchHistory()
   }, [])
 
   const isServerRunning = status?.server_running ?? false
@@ -543,154 +600,276 @@ export default function P2PServerDashboard() {
         </Card>
         </div>
 
-        {/* Peer Management Card - Full width below */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              Peer Management
-            </CardTitle>
-            <CardDescription>View and manage connected peers</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-medium">Known Peers ({peers.length})</p>
+        {/* Bottom Row - Peer Management and History side by side */}
+        <div className="grid gap-6 lg:grid-cols-2">
+          {/* Peer Management Card - Half width */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5" />
+                Peer Management
+              </CardTitle>
+              <CardDescription>View and manage connected peers</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium">Known Peers ({peers.length})</p>
+                  <Button
+                    onClick={() => setShowAddPeer(!showAddPeer)}
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                    disabled={actionLoading !== null}
+                  >
+                    <Plus className="h-4 w-4" />
+                    Add Peer
+                  </Button>
+                </div>
+
+                {showAddPeer && (
+                  <div className="rounded-lg border p-4 space-y-3 bg-muted/50">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div className="space-y-2">
+                        <label htmlFor="peerIp" className="text-sm font-medium">
+                          IP Address
+                        </label>
+                        <Input
+                          id="peerIp"
+                          placeholder="e.g., 192.168.1.100"
+                          value={newPeerIp}
+                          onChange={(e) => setNewPeerIp(e.target.value)}
+                          disabled={actionLoading !== null}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label htmlFor="peerPort" className="text-sm font-medium">
+                          Port
+                        </label>
+                        <Input
+                          id="peerPort"
+                          placeholder="8080"
+                          value={newPeerPort}
+                          onChange={(e) => setNewPeerPort(e.target.value)}
+                          disabled={actionLoading !== null}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={addPeer}
+                        disabled={!newPeerIp.trim() || !newPeerPort.trim() || actionLoading !== null}
+                        size="sm"
+                        className="gap-2"
+                      >
+                        {actionLoading === "addPeer" ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Plus className="h-4 w-4" />
+                        )}
+                        Add
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setShowAddPeer(false)
+                          setNewPeerIp("")
+                          setNewPeerPort("8080")
+                        }}
+                        variant="outline"
+                        size="sm"
+                        disabled={actionLoading !== null}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                <div className="rounded-lg border">
+                  {peers.length === 0 ? (
+                    <div className="p-4 text-center text-sm text-muted-foreground">
+                      No peers configured. Add a peer to get started.
+                    </div>
+                  ) : (
+                    <div className="divide-y">
+                      {peers.map((peer, index) => (
+                        <div key={index} className="p-3 flex items-center justify-between hover:bg-muted/50">
+                          <div className="flex items-center gap-3">
+                            <div className="h-2 w-2 rounded-full bg-blue-500" />
+                            <div>
+                              <p className="text-sm font-medium">{peer.ip}</p>
+                              <p className="text-xs text-muted-foreground">Port: {peer.port}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid gap-2 sm:grid-cols-3">
                 <Button
-                  onClick={() => setShowAddPeer(!showAddPeer)}
+                  onClick={fetchPeers}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  disabled={loading || actionLoading !== null}
+                >
+                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+                  Refresh
+                </Button>
+                <Button
+                  onClick={browseFiles}
                   variant="outline"
                   size="sm"
                   className="gap-2"
                   disabled={actionLoading !== null}
                 >
-                  <Plus className="h-4 w-4" />
-                  Add Peer
+                  {actionLoading === "browseFiles" ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <FileText className="h-4 w-4" />
+                  )}
+                  Browse Files
+                </Button>
+                <Button
+                  onClick={discoverPeers}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  disabled={actionLoading !== null}
+                >
+                  {actionLoading === "discoverPeers" ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Search className="h-4 w-4" />
+                  )}
+                  Discover
                 </Button>
               </div>
+            </CardContent>
+          </Card>
 
-              {showAddPeer && (
-                <div className="rounded-lg border p-4 space-y-3 bg-muted/50">
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <label htmlFor="peerIp" className="text-sm font-medium">
-                        IP Address
-                      </label>
-                      <Input
-                        id="peerIp"
-                        placeholder="e.g., 192.168.1.100"
-                        value={newPeerIp}
-                        onChange={(e) => setNewPeerIp(e.target.value)}
-                        disabled={actionLoading !== null}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label htmlFor="peerPort" className="text-sm font-medium">
-                        Port
-                      </label>
-                      <Input
-                        id="peerPort"
-                        placeholder="8080"
-                        value={newPeerPort}
-                        onChange={(e) => setNewPeerPort(e.target.value)}
-                        disabled={actionLoading !== null}
-                      />
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={addPeer}
-                      disabled={!newPeerIp.trim() || !newPeerPort.trim() || actionLoading !== null}
-                      size="sm"
-                      className="gap-2"
-                    >
-                      {actionLoading === "addPeer" ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Plus className="h-4 w-4" />
-                      )}
-                      Add
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        setShowAddPeer(false)
-                        setNewPeerIp("")
-                        setNewPeerPort("8080")
-                      }}
-                      variant="outline"
-                      size="sm"
-                      disabled={actionLoading !== null}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
+          {/* History Card - Half width */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  Transfer History
                 </div>
-              )}
-
-              <div className="rounded-lg border">
-                {peers.length === 0 ? (
-                  <div className="p-4 text-center text-sm text-muted-foreground">
-                    No peers configured. Add a peer to get started.
+                <div className="flex gap-2">
+                  <Button
+                    onClick={fetchHistory}
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                    disabled={historyLoading}
+                  >
+                    {historyLoading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <RefreshCw className="h-4 w-4" />
+                    )}
+                    Refresh
+                  </Button>
+                  <Button
+                    onClick={openHistoryFile}
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                  >
+                    <FolderOpen className="h-4 w-4" />
+                    View Full
+                  </Button>
+                  <Button
+                    onClick={clearHistory}
+                    variant="outline"
+                    size="sm"
+                    className="gap-2 text-red-600"
+                  >
+                    <X className="h-4 w-4" />
+                    Clear
+                  </Button>
+                </div>
+              </CardTitle>
+              <CardDescription>Recent file transfers (latest 5)</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {historyLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {history.length === 0 ? (
+                  <div className="text-center text-sm text-muted-foreground py-8">
+                    <FileText className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                    <p>No transfer history yet</p>
+                    <p className="text-xs mt-1">Start sharing or downloading files</p>
                   </div>
                 ) : (
-                  <div className="divide-y">
-                    {peers.map((peer, index) => (
-                      <div key={index} className="p-3 flex items-center justify-between hover:bg-muted/50">
-                        <div className="flex items-center gap-3">
-                          <div className="h-2 w-2 rounded-full bg-blue-500" />
-                          <div>
-                            <p className="text-sm font-medium">{peer.ip}</p>
-                            <p className="text-xs text-muted-foreground">Port: {peer.port}</p>
+                  <div className="space-y-2 max-h-64 overflow-y-auto">
+                    {history.slice(0, 5).map((entry, index) => {
+                      // Parse the history entry
+                      const parts = entry.split(' | ')
+                      const timestamp = parts[0]
+                      const action = parts[1]
+                      
+                      // Determine if it's shared, received, or chunk transfer
+                      const isShared = action.includes('SHARED:')
+                      const isReceived = action.includes('RECEIVED:')
+                      const isChunk = action.includes('CHUNK_')
+                      
+                      return (
+                        <div key={index} className="flex items-center justify-between p-2 rounded-lg bg-muted/30 text-xs">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              {isShared && <span className="text-green-600">📤</span>}
+                              {isReceived && <span className="text-blue-600">📥</span>}
+                              {isChunk && <span className="text-gray-600">🔗</span>}
+                              <span className="font-medium">{action}</span>
+                            </div>
+                          </div>
+                          <div className="text-right text-muted-foreground">
+                            <p>{timestamp.split(' ')[1]}</p>
                           </div>
                         </div>
+                      )
+                    })}
+                    {history.length > 5 && (
+                      <div className="text-center pt-2">
+                        <Button
+                          onClick={openHistoryFile}
+                          variant="ghost"
+                          size="sm"
+                          className="text-xs"
+                        >
+                          View {history.length - 5} more entries...
+                        </Button>
                       </div>
-                    ))}
+                    )}
                   </div>
                 )}
               </div>
-            </div>
-
-            <div className="grid gap-2 sm:grid-cols-3">
-              <Button
-                onClick={fetchPeers}
-                variant="outline"
-                size="sm"
-                className="gap-2"
-                disabled={loading || actionLoading !== null}
-              >
-                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
-                Refresh
-              </Button>
-              <Button
-                onClick={browseFiles}
-                variant="outline"
-                size="sm"
-                className="gap-2"
-                disabled={actionLoading !== null}
-              >
-                {actionLoading === "browseFiles" ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <FileText className="h-4 w-4" />
-                )}
-                Browse Files
-              </Button>
-              <Button
-                onClick={discoverPeers}
-                variant="outline"
-                size="sm"
-                className="gap-2"
-                disabled={actionLoading !== null}
-              >
-                {actionLoading === "discoverPeers" ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Search className="h-4 w-4" />
-                )}
-                Discover
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+              )}
+              
+              <div className="pt-3 border-t">
+                <Button
+                  onClick={fetchHistory}
+                  variant="outline"
+                  size="sm"
+                  className="w-full gap-2"
+                  disabled={actionLoading !== null}
+                >
+                  <RefreshCw className="h-4 w-4" />
+                  Refresh History
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Download Dialog */}
         {showDownloadDialog && (

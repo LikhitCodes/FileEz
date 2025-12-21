@@ -517,4 +517,5 @@ CMakeFiles/p2p.dir/src/control_server.cpp.obj: \
  D:/Projects/DecentralizedP2P/include/network_utils.h \
  D:/Projects/DecentralizedP2P/include/file_utils.h \
  D:/Projects/DecentralizedP2P/include/peer.h \
+ D:/Projects/DecentralizedP2P/include/history_manager.h \
  D:/Projects/DecentralizedP2P/include/control_server.h

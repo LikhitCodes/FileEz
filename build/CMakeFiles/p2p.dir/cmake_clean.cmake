@@ -5,6 +5,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/p2p.dir/src/control_server.cpp.obj.d"
   "CMakeFiles/p2p.dir/src/file_utils.cpp.obj"
   "CMakeFiles/p2p.dir/src/file_utils.cpp.obj.d"
+  "CMakeFiles/p2p.dir/src/history_manager.cpp.obj"
+  "CMakeFiles/p2p.dir/src/history_manager.cpp.obj.d"
   "CMakeFiles/p2p.dir/src/main.cpp.obj"
   "CMakeFiles/p2p.dir/src/main.cpp.obj.d"
   "CMakeFiles/p2p.dir/src/network_utils.cpp.obj"

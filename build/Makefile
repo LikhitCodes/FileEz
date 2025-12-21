@@ -200,6 +200,30 @@ src/file_utils.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\p2p.dir\build.make CMakeFiles/p2p.dir/src/file_utils.cpp.s
 .PHONY : src/file_utils.cpp.s
 
+src/history_manager.obj: src/history_manager.cpp.obj
+.PHONY : src/history_manager.obj
+
+# target to build an object file
+src/history_manager.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\p2p.dir\build.make CMakeFiles/p2p.dir/src/history_manager.cpp.obj
+.PHONY : src/history_manager.cpp.obj
+
+src/history_manager.i: src/history_manager.cpp.i
+.PHONY : src/history_manager.i
+
+# target to preprocess a source file
+src/history_manager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\p2p.dir\build.make CMakeFiles/p2p.dir/src/history_manager.cpp.i
+.PHONY : src/history_manager.cpp.i
+
+src/history_manager.s: src/history_manager.cpp.s
+.PHONY : src/history_manager.s
+
+# target to generate assembly for a file
+src/history_manager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\p2p.dir\build.make CMakeFiles/p2p.dir/src/history_manager.cpp.s
+.PHONY : src/history_manager.cpp.s
+
 src/main.obj: src/main.cpp.obj
 .PHONY : src/main.obj
 
@@ -314,6 +338,9 @@ help:
 	@echo ... src/file_utils.obj
 	@echo ... src/file_utils.i
 	@echo ... src/file_utils.s
+	@echo ... src/history_manager.obj
+	@echo ... src/history_manager.i
+	@echo ... src/history_manager.s
 	@echo ... src/main.obj
 	@echo ... src/main.i
 	@echo ... src/main.s

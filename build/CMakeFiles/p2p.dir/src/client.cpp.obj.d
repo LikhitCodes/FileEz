@@ -167,6 +167,7 @@ CMakeFiles/p2p.dir/src/client.cpp.obj: \
  C:/msys64/mingw64/include/c++/15.2.0/set \
  C:/msys64/mingw64/include/c++/15.2.0/bits/stl_set.h \
  C:/msys64/mingw64/include/c++/15.2.0/bits/stl_multiset.h \
+ D:/Projects/DecentralizedP2P/include/history_manager.h \
  C:/msys64/mingw64/include/windows.h \
  C:/msys64/mingw64/include/sdkddkver.h C:/msys64/mingw64/include/excpt.h \
  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/stdarg.h \

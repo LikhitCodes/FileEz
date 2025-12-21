@@ -98,6 +98,7 @@ public:
     static std::string getLocalIP();
     static std::vector<std::string> getAllLocalIPs();
     static std::string getSubnetMask();
+    static std::string getClientIP(SOCKET socket);
     static bool isValidIP(const std::string& ip);
     static bool isPortAvailable(int port);
     

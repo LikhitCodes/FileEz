@@ -157,6 +157,7 @@ CMakeFiles/p2p.dir/src/server.cpp.obj: \
  C:/msys64/mingw64/include/c++/15.2.0/bits/stl_tempbuf.h \
  C:/msys64/mingw64/include/c++/15.2.0/pstl/glue_algorithm_defs.h \
  C:/msys64/mingw64/include/c++/15.2.0/pstl/execution_defs.h \
+ D:/Projects/DecentralizedP2P/include/history_manager.h \
  C:/msys64/mingw64/include/windows.h \
  C:/msys64/mingw64/include/sdkddkver.h C:/msys64/mingw64/include/excpt.h \
  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/stdarg.h \

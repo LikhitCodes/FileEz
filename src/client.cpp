@@ -4,6 +4,7 @@
 #include <cstring>
 #include <map>
 #include <set>
+#include "../include/history_manager.h"
 #ifdef _WIN32
     #include <windows.h>
     #include <process.h>
@@ -113,6 +114,15 @@ bool P2PClient::downloadFile(const std::string& filename) {
     }
     
     std::cout << "=== Download complete: " << outputFile << " ===" << std::endl;
+    
+    // Log successful download to history
+    std::string peerList = "";
+    for (size_t i = 0; i < peersWithFile.size(); i++) {
+        if (i > 0) peerList += ", ";
+        peerList += peersWithFile[i].ip;
+    }
+    HistoryManager::logFileReceived(filename, peerList, static_cast<int>(fileChunks.size()));
+    
     return true;
 }
 

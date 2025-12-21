@@ -1,0 +1,5 @@
+2025-12-21 11:20:15 | SHARED: presentation.pptx to 192.168.1.105 (4 chunks)
+2025-12-21 11:21:30 | RECEIVED: music.mp3 from 192.168.1.106 (8 chunks)
+2025-12-21 11:22:45 | CHUNK_SENT: chunk_005.dat to 192.168.1.107
+2025-12-21 11:23:10 | SHARED: video.mp4 to 192.168.1.108 (15 chunks)
+2025-12-21 11:24:25 | RECEIVED: archive.zip from 192.168.1.109 (6 chunks)

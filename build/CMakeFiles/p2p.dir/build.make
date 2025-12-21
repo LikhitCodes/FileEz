@@ -116,11 +116,26 @@ CMakeFiles/p2p.dir/src/file_utils.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/p2p.dir/src/file_utils.cpp.s"
 	C:\msys64\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\Projects\DecentralizedP2P\src\file_utils.cpp -o CMakeFiles\p2p.dir\src\file_utils.cpp.s
 
+CMakeFiles/p2p.dir/src/history_manager.cpp.obj: CMakeFiles/p2p.dir/flags.make
+CMakeFiles/p2p.dir/src/history_manager.cpp.obj: CMakeFiles/p2p.dir/includes_CXX.rsp
+CMakeFiles/p2p.dir/src/history_manager.cpp.obj: D:/Projects/DecentralizedP2P/src/history_manager.cpp
+CMakeFiles/p2p.dir/src/history_manager.cpp.obj: CMakeFiles/p2p.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Projects\DecentralizedP2P\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/p2p.dir/src/history_manager.cpp.obj"
+	C:\msys64\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/p2p.dir/src/history_manager.cpp.obj -MF CMakeFiles\p2p.dir\src\history_manager.cpp.obj.d -o CMakeFiles\p2p.dir\src\history_manager.cpp.obj -c D:\Projects\DecentralizedP2P\src\history_manager.cpp
+
+CMakeFiles/p2p.dir/src/history_manager.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/p2p.dir/src/history_manager.cpp.i"
+	C:\msys64\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\Projects\DecentralizedP2P\src\history_manager.cpp > CMakeFiles\p2p.dir\src\history_manager.cpp.i
+
+CMakeFiles/p2p.dir/src/history_manager.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/p2p.dir/src/history_manager.cpp.s"
+	C:\msys64\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\Projects\DecentralizedP2P\src\history_manager.cpp -o CMakeFiles\p2p.dir\src\history_manager.cpp.s
+
 CMakeFiles/p2p.dir/src/main.cpp.obj: CMakeFiles/p2p.dir/flags.make
 CMakeFiles/p2p.dir/src/main.cpp.obj: CMakeFiles/p2p.dir/includes_CXX.rsp
 CMakeFiles/p2p.dir/src/main.cpp.obj: D:/Projects/DecentralizedP2P/src/main.cpp
 CMakeFiles/p2p.dir/src/main.cpp.obj: CMakeFiles/p2p.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Projects\DecentralizedP2P\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/p2p.dir/src/main.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Projects\DecentralizedP2P\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/p2p.dir/src/main.cpp.obj"
 	C:\msys64\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/p2p.dir/src/main.cpp.obj -MF CMakeFiles\p2p.dir\src\main.cpp.obj.d -o CMakeFiles\p2p.dir\src\main.cpp.obj -c D:\Projects\DecentralizedP2P\src\main.cpp
 
 CMakeFiles/p2p.dir/src/main.cpp.i: cmake_force
@@ -135,7 +150,7 @@ CMakeFiles/p2p.dir/src/network_utils.cpp.obj: CMakeFiles/p2p.dir/flags.make
 CMakeFiles/p2p.dir/src/network_utils.cpp.obj: CMakeFiles/p2p.dir/includes_CXX.rsp
 CMakeFiles/p2p.dir/src/network_utils.cpp.obj: D:/Projects/DecentralizedP2P/src/network_utils.cpp
 CMakeFiles/p2p.dir/src/network_utils.cpp.obj: CMakeFiles/p2p.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Projects\DecentralizedP2P\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/p2p.dir/src/network_utils.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Projects\DecentralizedP2P\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/p2p.dir/src/network_utils.cpp.obj"
 	C:\msys64\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/p2p.dir/src/network_utils.cpp.obj -MF CMakeFiles\p2p.dir\src\network_utils.cpp.obj.d -o CMakeFiles\p2p.dir\src\network_utils.cpp.obj -c D:\Projects\DecentralizedP2P\src\network_utils.cpp
 
 CMakeFiles/p2p.dir/src/network_utils.cpp.i: cmake_force
@@ -150,7 +165,7 @@ CMakeFiles/p2p.dir/src/peer.cpp.obj: CMakeFiles/p2p.dir/flags.make
 CMakeFiles/p2p.dir/src/peer.cpp.obj: CMakeFiles/p2p.dir/includes_CXX.rsp
 CMakeFiles/p2p.dir/src/peer.cpp.obj: D:/Projects/DecentralizedP2P/src/peer.cpp
 CMakeFiles/p2p.dir/src/peer.cpp.obj: CMakeFiles/p2p.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Projects\DecentralizedP2P\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/p2p.dir/src/peer.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Projects\DecentralizedP2P\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/p2p.dir/src/peer.cpp.obj"
 	C:\msys64\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/p2p.dir/src/peer.cpp.obj -MF CMakeFiles\p2p.dir\src\peer.cpp.obj.d -o CMakeFiles\p2p.dir\src\peer.cpp.obj -c D:\Projects\DecentralizedP2P\src\peer.cpp
 
 CMakeFiles/p2p.dir/src/peer.cpp.i: cmake_force
@@ -165,7 +180,7 @@ CMakeFiles/p2p.dir/src/server.cpp.obj: CMakeFiles/p2p.dir/flags.make
 CMakeFiles/p2p.dir/src/server.cpp.obj: CMakeFiles/p2p.dir/includes_CXX.rsp
 CMakeFiles/p2p.dir/src/server.cpp.obj: D:/Projects/DecentralizedP2P/src/server.cpp
 CMakeFiles/p2p.dir/src/server.cpp.obj: CMakeFiles/p2p.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Projects\DecentralizedP2P\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/p2p.dir/src/server.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Projects\DecentralizedP2P\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/p2p.dir/src/server.cpp.obj"
 	C:\msys64\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/p2p.dir/src/server.cpp.obj -MF CMakeFiles\p2p.dir\src\server.cpp.obj.d -o CMakeFiles\p2p.dir\src\server.cpp.obj -c D:\Projects\DecentralizedP2P\src\server.cpp
 
 CMakeFiles/p2p.dir/src/server.cpp.i: cmake_force
@@ -181,6 +196,7 @@ p2p_OBJECTS = \
 "CMakeFiles/p2p.dir/src/client.cpp.obj" \
 "CMakeFiles/p2p.dir/src/control_server.cpp.obj" \
 "CMakeFiles/p2p.dir/src/file_utils.cpp.obj" \
+"CMakeFiles/p2p.dir/src/history_manager.cpp.obj" \
 "CMakeFiles/p2p.dir/src/main.cpp.obj" \
 "CMakeFiles/p2p.dir/src/network_utils.cpp.obj" \
 "CMakeFiles/p2p.dir/src/peer.cpp.obj" \
@@ -192,6 +208,7 @@ p2p_EXTERNAL_OBJECTS =
 p2p.exe: CMakeFiles/p2p.dir/src/client.cpp.obj
 p2p.exe: CMakeFiles/p2p.dir/src/control_server.cpp.obj
 p2p.exe: CMakeFiles/p2p.dir/src/file_utils.cpp.obj
+p2p.exe: CMakeFiles/p2p.dir/src/history_manager.cpp.obj
 p2p.exe: CMakeFiles/p2p.dir/src/main.cpp.obj
 p2p.exe: CMakeFiles/p2p.dir/src/network_utils.cpp.obj
 p2p.exe: CMakeFiles/p2p.dir/src/peer.cpp.obj
@@ -200,7 +217,7 @@ p2p.exe: CMakeFiles/p2p.dir/build.make
 p2p.exe: CMakeFiles/p2p.dir/linkLibs.rsp
 p2p.exe: CMakeFiles/p2p.dir/objects1.rsp
 p2p.exe: CMakeFiles/p2p.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=D:\Projects\DecentralizedP2P\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX executable p2p.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=D:\Projects\DecentralizedP2P\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX executable p2p.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\p2p.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

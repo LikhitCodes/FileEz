@@ -493,6 +493,29 @@ std::string NetworkUtils::getLocalIP() {
 #endif
 }
 
+std::string NetworkUtils::getClientIP(SOCKET socket) {
+#ifdef _WIN32
+    sockaddr_in clientAddr;
+    int addrLen = sizeof(clientAddr);
+    
+    if (getpeername(socket, (sockaddr*)&clientAddr, &addrLen) == SOCKET_ERROR) {
+        return "unknown";
+    }
+    
+    return std::string(inet_ntoa(clientAddr.sin_addr));
+#else
+    // For Linux/Unix systems
+    sockaddr_in clientAddr;
+    socklen_t addrLen = sizeof(clientAddr);
+    
+    if (getpeername(socket, (sockaddr*)&clientAddr, &addrLen) == -1) {
+        return "unknown";
+    }
+    
+    return std::string(inet_ntoa(clientAddr.sin_addr));
+#endif
+}
+
 bool NetworkUtils::isValidIP(const std::string& ip) {
     return inet_addr(ip.c_str()) != INADDR_NONE;
 }

@@ -2,6 +2,7 @@
 #include <vector>
 #include <cstring>
 #include <algorithm>
+#include "../include/history_manager.h"
 #ifdef _WIN32
     #include <windows.h>
     #include <process.h>
@@ -295,6 +296,10 @@ void P2PServer::processChunkRequest(SOCKET clientSocket, const MessageHeader& he
     // Send the chunk
     if (NetworkUtils::sendChunk(clientSocket, chunkPath, *requestedChunk)) {
         std::cout << "Successfully sent chunk: " << header.filename << " [" << header.chunkIndex << "]" << std::endl;
+        
+        // Get client IP for history logging
+        std::string clientIp = NetworkUtils::getClientIP(clientSocket);
+        HistoryManager::logChunkTransfer(header.filename, clientIp, header.chunkIndex, "sent");
     } else {
         std::cerr << "Failed to send chunk: " << header.filename << " [" << header.chunkIndex << "]" << std::endl;
     }
